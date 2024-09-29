@@ -49,12 +49,16 @@ public class WhispersController {
         String content = whispers.getContent();
         // 判断是否是 Mac 或 iOS 用户
         boolean isAppleUser = userAgent.toLowerCase().contains("macintosh") ||
-                              userAgent.toLowerCase().contains("iphone") ||
-                              userAgent.toLowerCase().contains("ipad");
+                userAgent.toLowerCase().contains("iphone") ||
+                userAgent.toLowerCase().contains("ipad");
 
         //拼接苹果符号
         if (isAppleUser) {
             content = "&#xF8FF; " + content;
+        } else {
+            String[] symbols = {"&#x058D; ", "&#x0FCA; "};
+            int randomIndex = (int) (Math.random() * symbols.length); // 随机选择一个符号
+            content = symbols[randomIndex] + " " + content;
         }
         String svgContent = "<svg width=\"700\" height=\"50\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">" +
                 "<defs>" +
