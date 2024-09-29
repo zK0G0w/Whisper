@@ -35,7 +35,10 @@ function deploy_springboot() {
   echo_msg 0 "Transferring JAR to server"
   scp target/${module_name}-0.0.1.jar ${server}:${server_path}/  # 传输 JAR 包到服务器
 
-  read -p "Restart $module_name right now? [y/n]: " restart
+  # 使用 echo + read 实现类似的提示
+  echo "Restart $module_name right now? [y/n]:"
+  read restart
+#  read -p "Restart $module_name right now? [y/n]: " restart
   case $restart in
     y)
       echo_msg 0 "Restarting application on the server"
