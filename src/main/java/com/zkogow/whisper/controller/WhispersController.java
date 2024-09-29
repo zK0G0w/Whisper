@@ -56,7 +56,7 @@ public class WhispersController {
         if (isAppleUser) {
             content = "&#xF8FF; " + content;
         } else {
-            String[] symbols = {"&#x058D; ", "&#x0FCA; "};
+            String[] symbols = {"&#9775; ", "&#9672; "};
             int randomIndex = (int) (Math.random() * symbols.length); // 随机选择一个符号
             content = symbols[randomIndex] + " " + content;
         }
