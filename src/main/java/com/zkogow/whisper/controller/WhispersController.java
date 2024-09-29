@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -42,10 +43,19 @@ public class WhispersController {
     }
 
     @GetMapping("/v2/whisper")
-    public ResponseEntity<String> getRandomWhisperAsSvg() {
+    public ResponseEntity<String> getRandomWhisperAsSvg(@RequestHeader("User-Agent") String userAgent) {
         WhispersVo whispers = whispersService.getRandomWhispers();
-        String content = whispers.getContent();
         String base64Image = imageService.getRandomImage();
+        String content = whispers.getContent();
+        // 判断是否是 Mac 或 iOS 用户
+        boolean isAppleUser = userAgent.toLowerCase().contains("macintosh") ||
+                              userAgent.toLowerCase().contains("iphone") ||
+                              userAgent.toLowerCase().contains("ipad");
+
+        //拼接苹果符号
+        if (isAppleUser) {
+            content = "&#xF8FF; " + content;
+        }
         String svgContent = "<svg width=\"700\" height=\"50\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">" +
                 "<defs>" +
                 "<pattern id=\"backgroundPattern\" width=\"680\" height=\"130\" patternUnits=\"userSpaceOnUse\">" +
@@ -54,7 +64,7 @@ public class WhispersController {
                 "</pattern>" +
                 "</defs>" +
                 "<text x=\"50%\" y=\"50%\" font-size=\"32\" font-weight=\"bold\" text-anchor=\"middle\" fill=\"url(#backgroundPattern)\">" +
-                "<tspan x=\"50%\" dy=\"0.3em\">" + "&#xF8FF;" + content + "</tspan>" +
+                "<tspan x=\"50%\" dy=\"0.3em\">" + content + "</tspan>" +
                 "</text>" +
                 "</svg>";
 
