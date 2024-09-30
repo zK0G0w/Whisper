@@ -1,4 +1,4 @@
-package com.zkogow.whisper.controller;
+package com.zkogow.whisper.controller.v2;
 
 import com.zkogow.whisper.model.dto.Result;
 import com.zkogow.whisper.model.vo.WhispersVo;
@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.List;
+
 /**
  * @Description:
  * @Author: WainZeng
@@ -21,7 +23,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
  */
 
 @Controller
-@RequestMapping("/api")
+@RequestMapping("/api/v2")
 public class WhispersController {
 
     @Autowired
@@ -30,19 +32,8 @@ public class WhispersController {
     @Autowired
     private ImageService imageService;
 
-    @GetMapping("/v1/whisper")
-    @ResponseBody
-    public Result<WhispersVo> getRandomWhisper() {
-        WhispersVo whispersVo = whispersService.getRandomWhispers();
-        if (whispersVo == null) {
-            return Result.failure("数据为空");
-        } else {
-            return Result.success(whispersVo);
-        }
 
-    }
-
-    @GetMapping("/v2/whisper")
+    @GetMapping("/whisper")
     public ResponseEntity<String> getRandomWhisperAsSvg(@RequestHeader("User-Agent") String userAgent) {
         WhispersVo whispers = whispersService.getRandomWhispers();
         String base64Image = imageService.getRandomImage();
@@ -78,6 +69,11 @@ public class WhispersController {
 
         // 返回 SVG 内容和 200 状态码
         return new ResponseEntity<>(svgContent, headers, HttpStatus.OK);
+
+    }
+
+    @GetMapping("/v2/add")
+    public List<WhispersVo> getWhisperList() {
 
     }
 }
