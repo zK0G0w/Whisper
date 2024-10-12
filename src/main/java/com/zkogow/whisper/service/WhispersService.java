@@ -3,6 +3,8 @@ package com.zkogow.whisper.service;
 import com.zkogow.whisper.entity.Whispers;
 import com.zkogow.whisper.model.vo.WhispersVo;
 
+import java.util.List;
+
 /**
  * @Description:whisper服务层接口
  * @Author: WainZeng
@@ -12,5 +14,11 @@ import com.zkogow.whisper.model.vo.WhispersVo;
 
 public interface WhispersService {
 
-    WhispersVo getRandomWhispers();
+    WhispersVo getRandomWhisper();
+
+    List<Whispers> getAllWhispers();
+
+    void deleteById(Long id);
+
+    void insertWhispers(Whispers whispers);
 }

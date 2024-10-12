@@ -1,5 +1,6 @@
 package com.zkogow.whisper.controller.v2;
 
+import com.zkogow.whisper.entity.Whispers;
 import com.zkogow.whisper.model.dto.Result;
 import com.zkogow.whisper.model.vo.WhispersVo;
 import com.zkogow.whisper.service.ImageService;
@@ -9,10 +10,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -24,7 +23,7 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/api/v2")
-public class WhispersController {
+public class WhispersV2Controller {
 
     @Autowired
     private WhispersService whispersService;
@@ -35,7 +34,7 @@ public class WhispersController {
 
     @GetMapping("/whisper")
     public ResponseEntity<String> getRandomWhisperAsSvg(@RequestHeader("User-Agent") String userAgent) {
-        WhispersVo whispers = whispersService.getRandomWhispers();
+        WhispersVo whispers = whispersService.getRandomWhisper();
         String base64Image = imageService.getRandomImage();
         String content = whispers.getContent();
         // 判断是否是 Mac 或 iOS 用户
@@ -72,8 +71,28 @@ public class WhispersController {
 
     }
 
-    @GetMapping("/v2/add")
-    public List<WhispersVo> getWhisperList() {
 
+    @GetMapping("/list")
+    public String getWhisperList(Model model) {
+        List<Whispers> list = whispersService.getAllWhispers();
+        System.out.println(list);
+        //return Result.success(list);
+        model.addAttribute("whispers", list);
+        return "list";
     }
+
+    @DeleteMapping("/delete/{id}")
+    @ResponseBody
+    public Result<String> deleteWhisper(@PathVariable Long id) {
+        whispersService.deleteById(id);
+        return Result.success("删除成功");
+    }
+
+    @PostMapping("/add")
+    @ResponseBody
+    public Result<String> addWhisper(@RequestBody Whispers whispers) {
+        whispersService.insertWhispers(whispers);
+        return Result.success("添加成功");
+    }
+
 }

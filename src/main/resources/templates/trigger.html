@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>脚本触发</title>
+    <script>
+        // 触发执行任务的函数
+        function triggerTask() {
+            fetch("/api/v1/setTask", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert("任务已触发：" + data.message);  // 显示服务器的响应
+            })
+            .catch(error => {
+                alert("触发任务失败: " + error);
+            });
+        }
+    </script>
+</head>
+<body>
+    <div>
+        <h1>脚本触发</h1>
+        <button onclick="triggerTask()">点击执行手机脚本</button>
+    </div>
+</body>
+</html>

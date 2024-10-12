@@ -8,6 +8,7 @@ import com.zkogow.whisper.service.WhispersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -23,9 +24,9 @@ public class WhispersServiceImpl implements WhispersService {
     private WhispersMapper whispersMapper;
 
     @Override
-    public WhispersVo getRandomWhispers() {
+    public WhispersVo getRandomWhisper() {
         // 获取表中的记录数
-        int count = whispersMapper.countWhispers();
+        int count = whispersMapper.countAll();
         if (count == 0) {
             return null;
         }
@@ -33,8 +34,24 @@ public class WhispersServiceImpl implements WhispersService {
         // 生成一个随机偏移量
         Random random = new Random();
         int randomOffset = random.nextInt(count);  // 生成 [0, count-1] 范围内的随机数
-        Whispers whispers = whispersMapper.findWhisperByOffset(randomOffset);
+        Whispers whispers = whispersMapper.findByOffset(randomOffset);
         return new WhispersVo(whispers.getContent(), whispers.getCreatedAt());
 
+    }
+
+    @Override
+    public List<Whispers> getAllWhispers() {
+        List<Whispers> list = whispersMapper.findAll();
+        return list;
+    }
+
+    @Override
+    public void deleteById(Long id) {
+        whispersMapper.deleteById(id);
+    }
+
+    @Override
+    public void insertWhispers(Whispers whispers) {
+        whispersMapper.insertWhispers(whispers);
     }
 }
