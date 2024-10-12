@@ -1,6 +1,107 @@
-<html>
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>工具集合 - zkogow.top</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #333;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 30px auto;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+        }
+        .card {
+            background-color: white;
+            border: 1px solid #ddd;
+            padding: 20px;
+            width: 300px;
+            text-align: center;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: 0.3s;
+        }
+        .card:hover {
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            transform: translateY(-5px);
+        }
+        h2 {
+            font-size: 18px;
+            margin-bottom: 15px;
+            color: #333;
+        }
+        p {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 15px;
+        }
+        a {
+            text-decoration: none;
+            color: white;
+            background-color: #333;
+            padding: 10px 20px;
+            border-radius: 5px;
+            transition: 0.3s;
+        }
+        a:hover {
+            background-color: #555;
+        }
+        footer {
+            margin-top: 40px;
+            padding: 20px;
+            background-color: #f1f1f1;
+            text-align: center;
+            color: #666;
+        }
+    </style>
+</head>
 <body>
-<h1>hello word!!!</h1>
-<p>this is a html page</p>
+
+<header>
+    <h1>工具集合 - zkogow.top</h1>
+</header>
+
+<div class="container">
+    <!-- 一言项目 -->
+    <div class="card">
+        <h2>一言服务</h2>
+        <p>一个简单的API服务，提供随机的文字内容。</p>
+        <a href="/api/v2/whisper" target="_blank">访问一言服务</a>
+    </div>
+
+    <!-- IP信息查询项目 -->
+    <div class="card">
+        <h2>IP 信息查询</h2>
+        <p>查看您的公网 IP 和地理位置信息。</p>
+        <a href="/api/v2/ipinfo" target="_blank">访问 IP 查询服务</a>
+    </div>
+
+    <!-- 其他项目（可以根据需要添加更多项目） -->
+    <div class="card">
+        <h2>更多服务</h2>
+        <p>即将上线</p>
+        <a href="#">即将上线</a>
+    </div>
+</div>
+
+<footer>
+    <p>© 2024 zkogow.top | 备案号：赣ICP备2024041940号</p>
+</footer>
+
 </body>
 </html>
