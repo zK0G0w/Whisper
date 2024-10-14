@@ -11,45 +11,55 @@
             margin: 0;
             padding: 0;
         }
+
         header {
             background-color: #333;
             color: white;
             padding: 20px;
             text-align: center;
         }
+
         .container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* 自动填充每行3个卡片 */
+            gap: 20px; /* 设置卡片之间的间距 */
             width: 90%;
             max-width: 1200px;
             margin: 30px auto;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-            justify-content: center;
         }
+
         .card {
             background-color: white;
             border: 1px solid #ddd;
             padding: 20px;
-            width: 300px;
             text-align: center;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            transition: 0.3s;
+            transition: transform 0.7s ease-in-out, box-shadow 0.7s ease-in-out;
+            cursor: grab; /* 鼠标悬浮时显示抓手 */
         }
+
+        .card:active {
+            cursor: grabbing; /* 鼠标按住拖动时显示抓取手形 */
+        }
+
         .card:hover {
             box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
             transform: translateY(-5px);
         }
+
         h2 {
             font-size: 18px;
             margin-bottom: 15px;
             color: #333;
         }
+
         p {
             font-size: 14px;
             color: #666;
             margin-bottom: 15px;
         }
+
         a {
             text-decoration: none;
             color: white;
@@ -58,15 +68,29 @@
             border-radius: 5px;
             transition: 0.3s;
         }
+
         a:hover {
             background-color: #555;
         }
+
         footer {
             margin-top: 40px;
             padding: 20px;
             background-color: #f1f1f1;
             text-align: center;
             color: #666;
+        }
+
+        /* 拖拽时的效果 */
+        .sortable-ghost {
+            opacity: 0.7; /* 拖拽时的透明度 */
+            transform: rotate(3deg); /* 拖拽时的旋转效果 */
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr; /* 移动端每行显示1个卡片 */
+            }
         }
     </style>
 </head>
@@ -76,7 +100,14 @@
     <h1>工具集合 - zkogow.top</h1>
 </header>
 
-<div class="container">
+<div class="container" id="sortable-container">
+    <!-- 作者博客 -->
+    <div class="card">
+        <h2>个人博客</h2>
+        <p>作者个人博客，其实什么都没有</p>
+        <a href="http://zkogow.top" target="_blank">访问作者博客</a>
+    </div>
+
     <!-- 一言项目 -->
     <div class="card">
         <h2>一言服务</h2>
@@ -91,7 +122,7 @@
         <a href="/api/v2/ipinfo" target="_blank">访问 IP 查询服务</a>
     </div>
 
-    <!-- 其他项目（可以根据需要添加更多项目） -->
+    <!-- 更多服务 -->
     <div class="card">
         <h2>更多服务</h2>
         <p>即将上线</p>
@@ -102,6 +133,19 @@
 <footer>
     <p>© 2024 zkogow.top | 备案号：赣ICP备2024041940号</p>
 </footer>
+
+<!-- 引入 Sortable.js 库 -->
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.14.0/Sortable.min.js"></script>
+
+<script>
+    // 使用 Sortable.js 让卡片可拖动
+    new Sortable(document.getElementById('sortable-container'), {
+        animation: 600, // 动画效果延长到600ms，使卡片移动更顺滑
+        easing: "cubic-bezier(0.25, 0.8, 0.5, 1)", // 使用缓动函数，使卡片切换更流畅
+        ghostClass: 'sortable-ghost', // 拖动时的视觉效果类
+        handle: '.card', // 明确设置拖动手柄为每张卡片
+    });
+</script>
 
 </body>
 </html>
