@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>IP 地址信息查询</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        .input-container {
+            margin-bottom: 20px;
+        }
+
+        .input-container input {
+            padding: 10px;
+            font-size: 16px;
+            width: 300px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .input-container button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+
+        .input-container button:hover {
+            background-color: #45a049;
+        }
+
+        .card-container {
+            display: flex;
+            justify-content: center;
+            flex-wrap: nowrap;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .card {
+            background-color: #fff;
+            border: 1px solid #ccc;
+            padding: 20px;
+            flex: 1;
+            border-radius: 8px;
+            box-shadow: 2px 2px 12px rgba(0, 0, 0, 0.1);
+            text-align: left;
+            transition: transform 0.3s ease;
+            min-width: 250px;
+        }
+
+        h2 {
+            color: #333;
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+
+        p {
+            font-size: 16px;
+            color: #555;
+            margin: 5px 0;
+        }
+
+        footer {
+            margin-top: 40px;
+            font-size: 14px;
+            color: #888;
+            background-color: #f1f1f1;
+            padding: 20px 0;
+        }
+
+    </style>
+
+    <script>
+        // 获取用户输入的 IP 地址
+        function queryIpLocation() {
+            let ipAddress = document.getElementById('ipInput').value;
+            if (ipAddress) {
+                fetchLocation(ipAddress, 'inputLocationCountry', 'inputLocationCity', 'inputLocationIsp');  // 查询用户输入的 IP 地址的地理位置信息
+            } else {
+                alert('请输入有效的IP地址');
+            }
+        }
+
+        // 使用 API 获取地理位置信息
+        function fetchLocation(ip, countryElementId, cityElementId, ispElementId) {
+            fetch(`/api/v2/proxy/ipinfo?ip=${ip}`)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById(countryElementId).innerText = data.country || '未知';
+                    document.getElementById(cityElementId).innerText = data.city || '未知';
+                    document.getElementById(ispElementId).innerText = data.isp || '未知';
+                })
+                .catch(error => {
+                    console.error('Error fetching IP location:', error);
+                });
+        }
+    </script>
+</head>
+<body>
+<div class="container">
+    <h1>手动输入 IP 地址查询地理位置信息</h1>
+
+    <div class="input-container">
+        <label for="ipInput" style="font-size: 16px; margin-bottom: 5px; display: block;">请输入 IP 地址:</label>
+        <input type="text" id="ipInput" placeholder="例如：192.168.1.1">
+        <button onclick="queryIpLocation()">查询</button>
+        <!-- 错误提示信息 -->
+        <div id="error-message" style="color: red; display: none; margin-top: 10px;">请输入有效的 IP 地址</div>
+    </div>
+
+
+    <div class="card-container">
+        <!-- 查询结果展示卡片 -->
+        <div class="card">
+            <h2>IP 地址信息</h2>
+            <p>IP 地址: <span id="inputIp">请在上方输入 IP 地址</span></p>
+            <p>国家: <span id="inputLocationCountry">-</span></p>
+            <p>城市: <span id="inputLocationCity">-</span></p>
+            <p>ISP: <span id="inputLocationIsp">-</span></p>
+        </div>
+    </div>
+
+    <footer>
+        <p>本网站仅提供 IP 地址查询功能，不提供其他服务。</p>
+        <p>备案号：<span th:text="'赣ICP备2024041940号'"></span></p>
+    </footer>
+</div>
+
+<script>
+    // 在用户手动输入 IP 并点击查询后，显示 IP 地址
+    function queryIpLocation() {
+        let ipAddress = document.getElementById('ipInput').value;
+
+        // 正则表达式，用于验证IP地址格式
+        const ipPattern = /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
+
+        const errorMessage = document.getElementById('error-message');
+
+        // 检查是否是合法的 IP 地址
+        if (ipPattern.test(ipAddress)) {
+            // 隐藏错误提示
+            errorMessage.style.display = 'none';
+
+            // 先显示“正在查询...”提示
+            document.getElementById('inputIp').innerText = ipAddress;
+            document.getElementById('inputLocationCountry').innerText = '正在查询...';
+            document.getElementById('inputLocationCity').innerText = '正在查询...';
+            document.getElementById('inputLocationIsp').innerText = '正在查询...';
+
+            // 查询用户输入的 IP 地址的地理位置信息
+            fetchLocation(ipAddress, 'inputLocationCountry', 'inputLocationCity', 'inputLocationIsp');
+        } else {
+            // 显示错误提示
+            errorMessage.style.display = 'block';
+        }
+    }
+</script>
+</body>
+</html>

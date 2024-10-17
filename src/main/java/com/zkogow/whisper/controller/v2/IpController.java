@@ -57,5 +57,10 @@ public class IpController {
         }
     }
 
+    @GetMapping("/queryip")
+    public String queryIp() {
+        return "queryIp";
+    }
+
 
 }
