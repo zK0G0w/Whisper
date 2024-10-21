@@ -92,6 +92,47 @@
                 grid-template-columns: 1fr; /* 移动端每行显示1个卡片 */
             }
         }
+
+        /* 模态窗口样式 */
+        .modal {
+            display: none; /* 默认隐藏 */
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.4); /* 半透明背景 */
+        }
+
+        /* 模态窗口的内容样式 */
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 600px; /* 限制模态框宽度 */
+            border-radius: 10px;
+            position: relative;
+        }
+
+        /* 关闭按钮的样式 */
+        .close {
+            position: absolute;
+            top: 10px;
+            right: 25px;
+            color: #aaa;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover, .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -133,8 +174,17 @@
     <div class="card">
         <h2>更多服务</h2>
         <p>即将上线</p>
-        <a href="#">即将上线</a>
+        <a href="#" id="open-modal">即将上线</a>
     </div>
+
+    <!-- 模态窗口的结构 -->
+    <div id="snorlax-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span> <!-- 关闭按钮 -->
+            <iframe src="/api/v2/snorlax" width="100%" height="300px" style="border:none;"></iframe>
+        </div>
+    </div>
+
 </div>
 
 <footer>
@@ -152,7 +202,28 @@
         ghostClass: 'sortable-ghost', // 拖动时的视觉效果类
         handle: '.card', // 明确设置拖动手柄为每张卡片
     });
-</script>
 
+    // 获取模态框和打开按钮
+    var modal = document.getElementById("snorlax-modal");
+    var btn = document.getElementById("open-modal");
+    var span = document.getElementsByClassName("close")[0];
+
+    // 点击按钮打开模态框
+    btn.onclick = function () {
+        modal.style.display = "block";
+    }
+
+    // 点击关闭按钮关闭模态框
+    span.onclick = function () {
+        modal.style.display = "none";
+    }
+
+    // 当用户点击模态框外部时关闭模态框
+    window.onclick = function (event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+</script>
 </body>
 </html>

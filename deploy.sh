@@ -1,5 +1,5 @@
 #!/bin/zsh
-# Author: [Your Name]
+# Author: [Wain zeng]
 #
 # This script is used to deploy the Whisper project to the server.
 # It builds the Spring Boot application and deploys the JAR file.
@@ -35,7 +35,6 @@ function deploy_springboot() {
   echo_msg 0 "Transferring JAR to server"
   scp target/${module_name}-0.0.1.jar ${server}:${server_path}/  # 传输 JAR 包到服务器
 
-  # 使用 echo + read 实现类似的提示
   echo "Restart $module_name right now? [y/n]:"
   read restart
 #  read -p "Restart $module_name right now? [y/n]: " restart

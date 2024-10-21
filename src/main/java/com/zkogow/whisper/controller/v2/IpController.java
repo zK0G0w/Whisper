@@ -62,5 +62,10 @@ public class IpController {
         return "queryIp";
     }
 
+    @GetMapping("/snorlax")
+    public String snorlax() {
+        System.out.println("就决定是你了，卡比兽！");
+        return "snorlax";
+    }
 
 }
