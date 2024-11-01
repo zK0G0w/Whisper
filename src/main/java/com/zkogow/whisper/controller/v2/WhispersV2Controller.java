@@ -95,4 +95,9 @@ public class WhispersV2Controller {
         return Result.success("添加成功");
     }
 
+    @GetMapping("403")
+    public String accessForbidden() {
+        return "403";
+    }
+
 }
