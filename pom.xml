@@ -53,11 +53,6 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>com.github.pagehelper</groupId>
-            <artifactId>pagehelper-spring-boot-starter</artifactId>
-            <version>1.2.13</version> <!-- 可以使用较新版本，例如1.2.13 -->
-        </dependency>
     </dependencies>
     <dependencyManagement>
         <dependencies>
@@ -73,7 +68,6 @@
                 <artifactId>thymeleaf-extras-java8time</artifactId>
                 <version>3.0.4.RELEASE</version>
             </dependency>
-
         </dependencies>
     </dependencyManagement>
 
