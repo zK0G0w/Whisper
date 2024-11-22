@@ -136,7 +136,7 @@
 
             $.ajax({
                 type: "POST",
-                url: "/home/api/v2/add",
+                url: "/api/v2/add",
                 contentType: "application/json",
                 data: JSON.stringify(whisperData),
                 success: function (response) {
@@ -158,7 +158,7 @@
             if (confirm("确定删除该 Whisper?")) {
                 $.ajax({
                     type: "DELETE",
-                    url: "/home/api/v2/delete/" + whisperId,
+                    url: "/api/v2/delete/" + whisperId,
                     success: function (response) {
                         showToast("删除成功: " + response.message);
                         setTimeout(function () {
@@ -183,7 +183,7 @@
                 const deletePromises = selectedWhispers.map(function (whisperId) {
                     return $.ajax({
                         type: "DELETE",
-                        url: "/home/api/v2/delete/" + whisperId
+                        url: "/api/v2/delete/" + whisperId
                     });
                 });
 

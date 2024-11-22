@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 
 @RestController
-@RequestMapping("/home/api/vi")
+@RequestMapping("/api/vi")
 public class AutoJsV1Controller {
     // 定义接收状态信息的 API
     @PostMapping("/autojs")
