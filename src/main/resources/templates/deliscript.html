@@ -75,7 +75,7 @@
         var icon = $('#triggerIcon');
         button.prop('disabled', true);
         icon.show();  // 显示旋转图标
-        $.post('/api/v1/setTask', function(response) {
+        $.post('/home/api/v1/setTask', function(response) {
             alert(response.message);  // 显示任务触发后的消息
             button.prop('disabled', false);
             icon.hide();  // 隐藏旋转图标
@@ -89,7 +89,7 @@
     // 定时刷新任务状态（每5秒）
     function refreshTaskStatus() {
         $('#loading').fadeIn();  // 使用淡入效果显示加载提示
-        $.get('/api/v1/status', function(data) {
+        $.get('/home/api/v1/status', function(data) {
             var tableBody = '';
             if (data.length === 0) {
                 tableBody = '<tr><td colspan="5" class="text-center">暂无任务</td></tr>';
