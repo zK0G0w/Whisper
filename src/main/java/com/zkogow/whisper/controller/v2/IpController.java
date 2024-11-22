@@ -15,7 +15,7 @@ import org.springframework.web.client.RestTemplate;
 import javax.servlet.http.HttpServletRequest;
 
 @Controller
-@RequestMapping("/api/v2")
+@RequestMapping("/home/api/v2")
 public class IpController {
 
     @Autowired
