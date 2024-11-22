@@ -14,7 +14,7 @@ import java.util.Map;
 import java.util.HashMap;
 
 @Controller
-@RequestMapping("/api/v1")
+@RequestMapping("/home/api/v1")
 public class ScriptMonitorController {
 
     @Autowired

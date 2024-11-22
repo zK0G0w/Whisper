@@ -22,7 +22,7 @@ import java.util.List;
  */
 
 @Controller
-@RequestMapping("/api/v2")
+@RequestMapping("/home/api/v2")
 public class WhispersV2Controller {
 
     @Autowired

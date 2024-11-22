@@ -101,7 +101,7 @@
 
         // 使用 API 获取地理位置信息
         function fetchLocation(ip, countryElementId, cityElementId, ispElementId) {
-            fetch(`/api/v2/proxy/ipinfo?ip=${ip}`)
+            fetch(`/home/api/v2/proxy/ipinfo?ip=${ip}`)
                 .then(response => response.json())
                 .then(data => {
                     document.getElementById(countryElementId).innerText = data.country || '未知';
