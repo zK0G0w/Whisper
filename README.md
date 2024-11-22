@@ -17,6 +17,6 @@ Whisper 是一个简单的、一言 (hitokoto) 接口服务，能够返回一句
 
 ## API 示例
 
-https://tool.zkogow.top/api/v2/whisper
+https://tool.zkogow.top/home/api/v2/whisper
 
 ![img.png](img.png)
