@@ -21,6 +21,10 @@
             --assistant-text: #000000;
             --header-bg: #f5f5f7;
             --border-color: #d1d1d1;
+            --input-bg: #ffffff;
+            --input-text: #000000;
+            --thinking-text: #666666;
+            --answer-text: #000000;
         }
 
         body {
@@ -83,6 +87,7 @@
             flex-grow: 1;
             text-align: center;
             font-weight: 500;
+            color: var(--input-text);
         }
 
         .chat-messages {
@@ -98,8 +103,14 @@
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .message-content {
@@ -108,7 +119,9 @@
             border-radius: 18px;
             font-size: 1rem;
             line-height: 1.5;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+            word-wrap: break-word;
+            overflow-wrap: break-word;
         }
 
         .user-message {
@@ -137,44 +150,48 @@
             background-color: var(--chat-window-bg);
             border-bottom-left-radius: 10px;
             border-bottom-right-radius: 10px;
+            display: flex;
+            gap: 10px;
         }
 
         .input-group {
             position: relative;
+            flex-grow: 1;
         }
 
         .form-control {
-            border-radius: 20px;
-            padding-right: 50px;
+            border-radius: 10px;
             resize: none;
             height: 50px;
             transition: height 0.2s;
+            background-color: var(--input-bg);
+            color: var(--input-text);
         }
 
         .form-control:focus {
             height: 100px;
+            background-color: var(--input-bg);
+            color: var(--input-text);
             box-shadow: 0 0 0 0.25rem rgba(11, 147, 246, 0.25);
         }
 
         .send-button {
-            position: absolute;
-            right: 10px;
-            bottom: 8px;
-            z-index: 5;
             background-color: var(--user-bubble);
             border: none;
-            border-radius: 50%;
-            width: 35px;
-            height: 35px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            border-radius: 10px;
+            padding: 10px 20px;
+            color: white;
+            font-weight: 500;
             cursor: pointer;
             transition: transform 0.2s;
+            align-self: flex-end;
+            height: 50px;
+            white-space: nowrap;
+            min-width: 80px;
         }
 
         .send-button:hover {
-            transform: scale(1.1);
+            transform: scale(1.02);
         }
 
         .send-button:disabled {
@@ -216,9 +233,15 @@
         }
 
         @keyframes typing {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.5); }
-            100% { transform: scale(1); }
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.5);
+            }
+            100% {
+                transform: scale(1);
+            }
         }
 
         /* 响应式样式 */
@@ -227,14 +250,33 @@
                 height: 100%;
                 border-radius: 0;
                 max-width: 100%;
+                margin: 0;
             }
 
             .chat-header {
                 border-radius: 0;
+                padding: 8px 10px;
             }
 
             .message-content {
-                max-width: 90%;
+                max-width: 85%;
+                font-size: 0.95rem;
+            }
+
+            .form-control {
+                font-size: 0.95rem;
+            }
+
+            .window-title {
+                font-size: 0.95rem;
+            }
+
+            .chat-messages {
+                padding: 10px;
+            }
+
+            .chat-input {
+                padding: 10px;
             }
         }
 
@@ -246,20 +288,22 @@
                 --user-bubble: #0b93f6;
                 --assistant-bubble: #3a3a3c;
                 --user-text: #ffffff;
-                --assistant-text: #ffffff;
+                --assistant-text: #e6e6e6;
                 --header-bg: #2a2a2a;
                 --border-color: #3a3a3c;
-            }
-
-            .form-control {
-                background-color: #3a3a3c;
-                color: #ffffff;
-                border-color: #4a4a4c;
+                --input-bg: #3a3a3c;
+                --input-text: #e6e6e6;
+                --thinking-text: #b0b0b0;
+                --answer-text: #e6e6e6;
             }
 
             .form-control:focus {
-                background-color: #3a3a3c;
-                color: #ffffff;
+                background-color: var(--input-bg);
+                color: var(--input-text);
+            }
+
+            .form-control::placeholder {
+                color: #a0a0a0;
             }
 
             /* 调整代码高亮主题 */
@@ -286,6 +330,7 @@
         @media (prefers-color-scheme: dark) {
             pre {
                 background-color: #2a2a2a;
+                border: 1px solid #3a3a3c;
             }
         }
 
@@ -314,144 +359,158 @@
         }
 
         .thinking-message {
-            color: #666;
+            color: var(--thinking-text);
             font-style: italic;
             margin-bottom: 10px;
         }
 
         .answer-message {
-            color: #000;
+            color: var(--answer-text);
             margin-top: 10px;
         }
     </style>
 </head>
 <body>
-    <div class="container-fluid py-3 h-100">
-        <div class="chat-container">
-            <div class="chat-header">
-                <div class="window-controls">
-                    <div class="window-control close"></div>
-                    <div class="window-control minimize"></div>
-                    <div class="window-control maximize"></div>
-                </div>
-                <div class="window-title">DeepSeek R1 AI 助手</div>
+<div class="container-fluid py-3 h-100">
+    <div class="chat-container">
+        <div class="chat-header">
+            <div class="window-controls">
+                <div class="window-control close"></div>
+                <div class="window-control minimize"></div>
+                <div class="window-control maximize"></div>
             </div>
+            <div class="window-title">DeepSeek R1 AI 助手</div>
+        </div>
 
-            <div class="chat-messages" id="chatMessages">
-                <!-- 消息将在这里动态加载 -->
-            </div>
+        <div class="chat-messages" id="chatMessages">
+            <!-- 消息将在这里动态加载 -->
+        </div>
 
-            <div class="toolbar">
-                <button class="clear-chat" id="clearChat">
-                    <i class="fas fa-trash-alt"></i> 清除对话
-                </button>
-                <button class="theme-toggle" id="themeToggle">
-                    <i class="fas fa-moon"></i> 切换主题
-                </button>
-            </div>
+        <div class="toolbar">
+            <button class="clear-chat" id="clearChat">
+                <i class="fas fa-trash-alt"></i> 清除对话
+            </button>
+            <button class="theme-toggle" id="themeToggle">
+                <i class="fas fa-moon"></i> 切换主题
+            </button>
+        </div>
 
-            <div class="chat-input">
-                <div class="input-group">
-                    <textarea class="form-control" id="userInput" placeholder="输入您的问题..." rows="1"></textarea>
-                    <button class="send-button" id="sendButton" disabled>
-                        <i class="fas fa-paper-plane" style="color: white;"></i>
-                    </button>
-                </div>
+        <div class="chat-input">
+            <div class="input-group">
+                <textarea class="form-control" id="userInput" placeholder="输入您的问题..." rows="1"></textarea>
             </div>
+            <button class="send-button" id="sendButton" disabled>
+                发送
+            </button>
         </div>
     </div>
+</div>
 
-    <!-- 引入JavaScript库 -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/showdown/2.1.0/showdown.min.js"></script>
+<!-- 引入JavaScript库 -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/showdown/2.1.0/showdown.min.js"></script>
 
-    <!-- 主要JavaScript -->
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const chatMessages = document.getElementById('chatMessages');
-            const userInput = document.getElementById('userInput');
-            const sendButton = document.getElementById('sendButton');
-            const clearChatButton = document.getElementById('clearChat');
-            const themeToggleButton = document.getElementById('themeToggle');
+<!-- 主要JavaScript -->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const chatMessages = document.getElementById('chatMessages');
+        const userInput = document.getElementById('userInput');
+        const sendButton = document.getElementById('sendButton');
+        const clearChatButton = document.getElementById('clearChat');
+        const themeToggleButton = document.getElementById('themeToggle');
 
-            let darkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
-            updateThemeIcon();
+        let darkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        updateThemeIcon();
 
-            // Markdown转换器
-            const converter = new showdown.Converter({
-                tables: true,
-                tasklists: true,
-                strikethrough: true,
-                ghCodeBlocks: true,
-                smartIndentationFix: true
-            });
+        // Markdown转换器
+        const converter = new showdown.Converter({
+            tables: true,
+            tasklists: true,
+            strikethrough: true,
+            ghCodeBlocks: true,
+            smartIndentationFix: true
+        });
 
-            // 载入历史消息
-            loadChatHistory();
+        // 载入历史消息
+        loadChatHistory();
 
-            // 输入框状态监控
-            userInput.addEventListener('input', function() {
-                sendButton.disabled = userInput.value.trim() === '';
+        // 输入框状态监控
+        userInput.addEventListener('input', function () {
+            sendButton.disabled = userInput.value.trim() === '';
 
-                // 自动调整高度
-                userInput.style.height = 'auto';
-                userInput.style.height = (userInput.scrollHeight > 200 ? 200 : userInput.scrollHeight) + 'px';
-            });
+            // 自动调整高度
+            userInput.style.height = 'auto';
+            userInput.style.height = (userInput.scrollHeight > 200 ? 200 : userInput.scrollHeight) + 'px';
+        });
 
-            // 发送消息
-            sendButton.addEventListener('click', sendMessage);
-            userInput.addEventListener('keydown', function(e) {
-                if (e.key === 'Enter' && !e.shiftKey) {
-                    e.preventDefault();
-                    if (!sendButton.disabled) {
-                        sendMessage();
-                    }
+        // 发送消息
+        sendButton.addEventListener('click', sendMessage);
+        userInput.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                if (!sendButton.disabled) {
+                    sendMessage();
                 }
-            });
+            }
+        });
 
-            // 清空聊天
-            clearChatButton.addEventListener('click', function() {
-                if (confirm('确定要清空所有聊天记录吗？')) {
-                    fetch('/api/v1/clear-chat', {
-                        method: 'POST'
-                    })
+        // 清空聊天
+        clearChatButton.addEventListener('click', function () {
+            if (confirm('确定要清空所有聊天记录吗？')) {
+                fetch('/api/v1/clear-chat', {
+                    method: 'POST'
+                })
                     .then(response => response.json())
                     .then(data => {
                         if (data.status === 'success') {
                             chatMessages.innerHTML = '';
                         }
                     });
-                }
-            });
-
-            // 切换主题
-            themeToggleButton.addEventListener('click', function() {
-                darkMode = !darkMode;
-                updateThemeMode();
-                updateThemeIcon();
-            });
-
-            function updateThemeMode() {
-                document.documentElement.style.setProperty('--chat-bg', darkMode ? '#1a1a1a' : '#f5f5f7');
-                document.documentElement.style.setProperty('--chat-window-bg', darkMode ? '#2a2a2a' : '#ffffff');
-                document.documentElement.style.setProperty('--assistant-bubble', darkMode ? '#3a3a3c' : '#e5e5ea');
-                document.documentElement.style.setProperty('--assistant-text', darkMode ? '#ffffff' : '#000000');
-                document.documentElement.style.setProperty('--header-bg', darkMode ? '#2a2a2a' : '#f5f5f7');
-                document.documentElement.style.setProperty('--border-color', darkMode ? '#3a3a3c' : '#d1d1d1');
             }
+        });
 
-            function updateThemeIcon() {
-                const icon = themeToggleButton.querySelector('i');
-                icon.className = darkMode ? 'fas fa-sun' : 'fas fa-moon';
-                themeToggleButton.innerHTML = icon.outerHTML + (darkMode ? ' 浅色模式' : ' 深色模式');
-            }
+        // 切换主题
+        themeToggleButton.addEventListener('click', function () {
+            darkMode = !darkMode;
+            updateThemeMode();
+            updateThemeIcon();
+            localStorage.setItem('darkMode', darkMode);
+        });
 
-            function appendMessage(role, content) {
-                const chatMessages = document.getElementById('chatMessages');
-                const messageDiv = document.createElement('div');
-                messageDiv.className = role === 'user' ? 'user-message' : 'assistant-message';
-                
+        function updateThemeMode() {
+            document.documentElement.style.setProperty('--chat-bg', darkMode ? '#1a1a1a' : '#f5f5f7');
+            document.documentElement.style.setProperty('--chat-window-bg', darkMode ? '#2a2a2a' : '#ffffff');
+            document.documentElement.style.setProperty('--assistant-bubble', darkMode ? '#3a3a3c' : '#e5e5ea');
+            document.documentElement.style.setProperty('--assistant-text', darkMode ? '#e6e6e6' : '#000000');
+            document.documentElement.style.setProperty('--header-bg', darkMode ? '#2a2a2a' : '#f5f5f7');
+            document.documentElement.style.setProperty('--border-color', darkMode ? '#3a3a3c' : '#d1d1d1');
+            document.documentElement.style.setProperty('--input-bg', darkMode ? '#3a3a3c' : '#ffffff');
+            document.documentElement.style.setProperty('--input-text', darkMode ? '#e6e6e6' : '#000000');
+            document.documentElement.style.setProperty('--thinking-text', darkMode ? '#b0b0b0' : '#666666');
+            document.documentElement.style.setProperty('--answer-text', darkMode ? '#e6e6e6' : '#000000');
+        }
+
+        function updateThemeIcon() {
+            const icon = themeToggleButton.querySelector('i');
+            icon.className = darkMode ? 'fas fa-sun' : 'fas fa-moon';
+            themeToggleButton.innerHTML = icon.outerHTML + (darkMode ? ' 浅色模式' : ' 深色模式');
+        }
+
+        function appendMessage(role, content) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${role === 'user' ? 'user-message' : 'assistant-message'}`;
+
+            // 创建消息内容容器
+            const contentDiv = document.createElement('div');
+            contentDiv.className = 'message-content';
+
+            if (role === 'user') {
+                // 用户消息直接显示
+                contentDiv.textContent = content;
+                messageDiv.appendChild(contentDiv);
+            } else if (role === 'assistant') {
+                // 助手消息处理
                 if (content.startsWith('thinking:')) {
                     // 显示思考过程
                     const thinkingContent = content.substring(9);
@@ -459,7 +518,7 @@
                         currentThinkingDiv = document.createElement('div');
                         currentThinkingDiv.className = 'thinking-message';
                         currentThinkingDiv.innerHTML = '<strong>思考过程：</strong><br>';
-                        messageDiv.appendChild(currentThinkingDiv);
+                        contentDiv.appendChild(currentThinkingDiv);
                     }
                     currentThinkingDiv.innerHTML += thinkingContent;
                 } else if (content.startsWith('answer:')) {
@@ -469,53 +528,64 @@
                         currentAnswerDiv = document.createElement('div');
                         currentAnswerDiv.className = 'answer-message';
                         currentAnswerDiv.innerHTML = '<strong>回答：</strong><br>';
-                        messageDiv.appendChild(currentAnswerDiv);
+                        contentDiv.appendChild(currentAnswerDiv);
                     }
                     currentAnswerDiv.innerHTML += answerContent;
                 } else if (content.startsWith('error:')) {
                     // 显示错误信息
-                    messageDiv.textContent = '错误：' + content.substring(6);
-                    messageDiv.style.color = 'red';
+                    contentDiv.textContent = '错误：' + content.substring(6);
+                    contentDiv.style.color = 'red';
+                } else {
+                    // 普通消息
+                    contentDiv.innerHTML = converter.makeHtml(content);
+
+                    // 高亮代码块
+                    contentDiv.querySelectorAll('pre code').forEach((block) => {
+                        hljs.highlightElement(block);
+                    });
                 }
-                
-                chatMessages.appendChild(messageDiv);
-                chatMessages.scrollTop = chatMessages.scrollHeight;
+
+                messageDiv.appendChild(contentDiv);
             }
-            
-            let currentThinkingDiv = null;
-            let currentAnswerDiv = null;
-            
-            function sendMessage() {
-                const message = userInput.value.trim();
-                if (message === '') return;
 
-                // 添加用户消息
-                appendMessage('user', message);
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
 
-                // 清空输入框并重置高度
-                userInput.value = '';
-                userInput.style.height = '50px';
-                sendButton.disabled = true;
+        let currentThinkingDiv = null;
+        let currentAnswerDiv = null;
+        let currentAssistantMessageDiv = null;
 
-                // 重置当前的思考和回答 div
-                currentThinkingDiv = null;
-                currentAnswerDiv = null;
+        function sendMessage() {
+            const message = userInput.value.trim();
+            if (message === '') return;
 
-                // 显示打字指示器
-                showTypingIndicator();
+            // 添加用户消息
+            appendMessage('user', message);
 
-                let fullResponse = '';
-                let currentBlock = '';
-                let isInCodeBlock = false;
+            // 清空输入框并重置高度
+            userInput.value = '';
+            userInput.style.height = '50px';
+            sendButton.disabled = true;
 
-                // 使用 fetch API 的流式处理
-                fetch('/api/v1/ask-stream', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ question: message })
-                })
+            // 重置当前的思考和回答 div
+            currentThinkingDiv = null;
+            currentAnswerDiv = null;
+            currentAssistantMessageDiv = null;
+
+            // 显示打字指示器
+            showTypingIndicator();
+
+            let fullResponse = '';
+
+            // 使用 fetch API 的流式处理
+            fetch('/api/v1/ask-stream', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({question: message})
+            })
                 .then(response => {
                     const reader = response.body.getReader();
                     const decoder = new TextDecoder();
@@ -532,7 +602,7 @@
 
                             // 解码新的数据块并添加到缓冲区
                             buffer += decoder.decode(value, {stream: true});
-                            
+
                             // 处理完整的 SSE 消息
                             const messages = buffer.split('\n\n');
                             buffer = messages.pop(); // 保留最后一个可能不完整的消息
@@ -540,7 +610,7 @@
                             messages.forEach(message => {
                                 const lines = message.split('\n');
                                 let content = '';
-                                
+
                                 lines.forEach(line => {
                                     if (line.startsWith('data:')) {
                                         content = line.substring(5).trim();
@@ -552,18 +622,53 @@
 
                                             // 添加内容
                                             fullResponse += content;
-                                            
+
                                             // 实时更新显示
-                                            appendMessage('assistant', content);
-                                            
-                                            // 高亮代码块
-                                            if (content.startsWith('thinking:') || content.startsWith('answer:')) {
-                                                const codeBlocks = content.split('\n').filter(line => line.startsWith('```'));
-                                                codeBlocks.forEach(block => {
-                                                    const hljsBlock = document.createElement('code');
-                                                    hljsBlock.className = 'hljs';
-                                                    hljsBlock.textContent = block.substring(3, block.length - 3);
-                                                    currentAnswerDiv.appendChild(hljsBlock);
+                                            if (!currentAssistantMessageDiv) {
+                                                // 创建新的助手消息
+                                                currentAssistantMessageDiv = document.createElement('div');
+                                                currentAssistantMessageDiv.className = 'message assistant-message';
+
+                                                const contentDiv = document.createElement('div');
+                                                contentDiv.className = 'message-content';
+                                                currentAssistantMessageDiv.appendChild(contentDiv);
+
+                                                chatMessages.appendChild(currentAssistantMessageDiv);
+                                            }
+
+                                            const contentDiv = currentAssistantMessageDiv.querySelector('.message-content');
+
+                                            if (content.startsWith('thinking:')) {
+                                                // 显示思考过程
+                                                const thinkingContent = content.substring(9);
+                                                if (!currentThinkingDiv) {
+                                                    currentThinkingDiv = document.createElement('div');
+                                                    currentThinkingDiv.className = 'thinking-message';
+                                                    currentThinkingDiv.innerHTML = '<strong>思考过程：</strong><br>';
+                                                    contentDiv.appendChild(currentThinkingDiv);
+                                                }
+                                                currentThinkingDiv.innerHTML += thinkingContent;
+                                            } else if (content.startsWith('answer:')) {
+                                                // 显示最终回答
+                                                const answerContent = content.substring(7);
+                                                if (!currentAnswerDiv) {
+                                                    currentAnswerDiv = document.createElement('div');
+                                                    currentAnswerDiv.className = 'answer-message';
+                                                    currentAnswerDiv.innerHTML = '<strong>回答：</strong><br>';
+                                                    contentDiv.appendChild(currentAnswerDiv);
+                                                }
+                                                currentAnswerDiv.innerHTML += answerContent;
+                                            } else if (content.startsWith('error:')) {
+                                                // 显示错误信息
+                                                contentDiv.textContent = '错误：' + content.substring(6);
+                                                contentDiv.style.color = 'red';
+                                            } else {
+                                                // 普通消息
+                                                contentDiv.innerHTML = converter.makeHtml(content);
+
+                                                // 高亮代码块
+                                                contentDiv.querySelectorAll('pre code').forEach((block) => {
+                                                    hljs.highlightElement(block);
                                                 });
                                             }
 
@@ -587,17 +692,26 @@
                     if (document.getElementById('typingIndicator')) {
                         document.getElementById('typingIndicator').remove();
                     }
-                    appendMessage('assistant', '连接已关闭');
+
+                    // 创建错误消息
+                    const errorDiv = document.createElement('div');
+                    errorDiv.className = 'message assistant-message';
+                    const contentDiv = document.createElement('div');
+                    contentDiv.className = 'message-content';
+                    contentDiv.textContent = '连接已关闭';
+                    contentDiv.style.color = 'red';
+                    errorDiv.appendChild(contentDiv);
+                    chatMessages.appendChild(errorDiv);
+
+                    scrollToBottom();
                 });
+        }
 
-                scrollToBottom();
-            }
-
-            function showTypingIndicator() {
-                const typingDiv = document.createElement('div');
-                typingDiv.className = 'message assistant-message';
-                typingDiv.id = 'typingIndicator';
-                typingDiv.innerHTML = `
+        function showTypingIndicator() {
+            const typingDiv = document.createElement('div');
+            typingDiv.className = 'message assistant-message';
+            typingDiv.id = 'typingIndicator';
+            typingDiv.innerHTML = `
                     <div class="typing-indicator">
                         <span></span>
                         <span></span>
@@ -605,30 +719,42 @@
                     </div>
                 `;
 
-                chatMessages.appendChild(typingDiv);
-                scrollToBottom();
-            }
+            chatMessages.appendChild(typingDiv);
+            scrollToBottom();
+        }
 
-            function removeTypingIndicator() {
-                const typingIndicator = document.getElementById('typingIndicator');
-                if (typingIndicator) {
-                    typingIndicator.remove();
-                }
-            }
+        function scrollToBottom() {
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
 
-            function scrollToBottom() {
-                chatMessages.scrollTop = chatMessages.scrollHeight;
-            }
-
-            function loadChatHistory() {
-                fetch('/api/v1/chat-history')
+        function loadChatHistory() {
+            fetch('/api/v1/chat-history')
                 .then(response => response.json())
                 .then(messages => {
                     chatMessages.innerHTML = '';
 
                     messages.forEach(msg => {
-                        if (msg.role === 'user' || msg.role === 'assistant') {
-                            appendMessage(msg.role, msg.content);
+                        if (msg.role === 'user') {
+                            // 用户消息
+                            appendMessage('user', msg.content);
+                        } else if (msg.role === 'assistant') {
+                            // 助手消息
+                            const messageDiv = document.createElement('div');
+                            messageDiv.className = 'message assistant-message';
+
+                            const contentDiv = document.createElement('div');
+                            contentDiv.className = 'message-content';
+
+                            // 使用Markdown转换器处理内容
+                            contentDiv.innerHTML = converter.makeHtml(msg.content);
+
+                            // 高亮代码块
+                            contentDiv.querySelectorAll('pre code').forEach((block) => {
+                                hljs.highlightElement(block);
+                            });
+
+                            messageDiv.appendChild(contentDiv);
+                            chatMessages.appendChild(messageDiv);
                         }
                     });
 
@@ -637,8 +763,8 @@
                 .catch(error => {
                     console.error('Error loading chat history:', error);
                 });
-            }
-        });
-    </script>
+        }
+    });
+</script>
 </body>
 </html>
