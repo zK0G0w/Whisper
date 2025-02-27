@@ -1,0 +1,45 @@
+# MyBatis 配置
+mybatis:
+  # 指定Mybatis的Mapper文件
+  mapper-locations: classpath:mappers/*xml
+  # 指定Mybatis的实体目录
+  type-aliases-package: com.zkogow.whisper.mybatis.entity
+
+# 应用服务 WEB 访问端口
+server:
+  port: 8080
+
+# 数据源配置
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:3306/Whisper?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=GMT%2B8
+    username: root
+    password: root
+
+  # Thymeleaf 配置
+  thymeleaf:
+    # 开启模板缓存（默认值：true）
+    cache: true
+    # 检查模板是否存在，然后再呈现
+    check-template: true
+    # 检查模板位置是否正确（默认值:true）
+    check-template-location: true
+    # Content-Type 的值（默认值：text/html）
+    content-type: text/html
+    # 开启 MVC Thymeleaf 视图解析（默认值：true）
+    enabled: true
+    # 模板编码
+    encoding: UTF-8
+    # 要被排除在解析之外的视图名称列表，用逗号分隔
+    excluded-view-names:
+    # 要运用于模板之上的模板模式。另见StandardTemplate-ModeHandlers(默认值：HTML5)
+    mode: HTML5
+    # 在构建 URL 时添加到视图名称前的前缀（默认值：classpath:/templates/）
+    prefix: classpath:/templates/
+    # 在构建 URL 时添加到视图名称后的后缀（默认值：.html）
+    suffix: .html
+
+  # 排除自动配置
+  autoconfigure:
+    exclude: com.github.pagehelper.autoconfigure.PageHelperAutoConfiguration
