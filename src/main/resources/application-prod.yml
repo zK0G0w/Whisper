@@ -43,3 +43,9 @@ spring:
   # 排除自动配置
   autoconfigure:
     exclude: com.github.pagehelper.autoconfigure.PageHelperAutoConfiguration
+
+# 火山引擎 API 配置，请替换为你的实际 API URL 和密钥
+volc:
+  api:
+    url: https://ark.cn-beijing.volces.com/api/v3/chat/completions
+    key: your-api-key
