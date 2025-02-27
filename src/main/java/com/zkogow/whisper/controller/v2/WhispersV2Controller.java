@@ -1,6 +1,6 @@
 package com.zkogow.whisper.controller.v2;
 
-import com.zkogow.whisper.entity.Whispers;
+import com.zkogow.whisper.model.entity.Whispers;
 import com.zkogow.whisper.model.dto.Result;
 import com.zkogow.whisper.model.vo.WhispersVo;
 import com.zkogow.whisper.service.ImageService;

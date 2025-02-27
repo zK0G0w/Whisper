@@ -1,6 +1,6 @@
 package com.zkogow.whisper.service;
 
-import com.zkogow.whisper.entity.Whispers;
+import com.zkogow.whisper.model.entity.Whispers;
 import com.zkogow.whisper.model.vo.WhispersVo;
 
 import java.util.List;

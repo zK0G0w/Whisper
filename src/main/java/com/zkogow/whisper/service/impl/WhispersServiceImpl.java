@@ -1,8 +1,7 @@
 package com.zkogow.whisper.service.impl;
 
-import com.zkogow.whisper.entity.Whispers;
+import com.zkogow.whisper.model.entity.Whispers;
 import com.zkogow.whisper.mapper.WhispersMapper;
-import com.zkogow.whisper.model.dto.Result;
 import com.zkogow.whisper.model.vo.WhispersVo;
 import com.zkogow.whisper.service.WhispersService;
 import org.springframework.beans.factory.annotation.Autowired;

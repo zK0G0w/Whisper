@@ -1,6 +1,6 @@
 package com.zkogow.whisper.mapper;
 
-import com.zkogow.whisper.entity.Whispers;
+import com.zkogow.whisper.model.entity.Whispers;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;

@@ -4,92 +4,188 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>工具集合 - zkogow.top</title>
+    <!-- 在 head 中添加 Typed.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
+
+    <style>
+        /* 修改标题相关样式 */
+        header h1 {
+            margin: 0;
+            font-weight: 500;
+            font-size: 24px;
+            display: inline-block;
+        }
+
+        /* 添加打字机光标样式 */
+        .typed-cursor {
+            font-size: 24px;
+            opacity: 1;
+            animation: blink 0.7s infinite;
+        }
+
+        @keyframes blink {
+            0% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+
+        /* 删除之前的 typewriter 相关样式 */
+    </style>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f5f5f5;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: #1e1e1e;
             margin: 0;
             padding: 0;
+            min-height: 100vh;
+            color: #fff;
         }
 
         header {
-            background-color: #333;
-            color: white;
+            background: rgba(50, 50, 50, 0.8);
+            backdrop-filter: blur(10px);
+            color: #fff;
             padding: 20px;
             text-align: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
 
         .container {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* 自动填充每行3个卡片 */
-            gap: 20px; /* 设置卡片之间的间距 */
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
             width: 90%;
             max-width: 1200px;
-            margin: 30px auto;
+            margin: 40px auto;
+            padding: 0 20px;
         }
 
         .card {
-            background-color: white;
-            border: 1px solid #ddd;
-            padding: 20px;
+            background: rgba(45, 45, 45, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 25px;
             text-align: center;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            transition: transform 0.7s ease-in-out, box-shadow 0.7s ease-in-out;
-            cursor: grab; /* 鼠标悬浮时显示抓手 */
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            cursor: grab;
+            position: relative;
+            padding-top: 40px;
+            backdrop-filter: blur(10px);
+            transform-style: preserve-3d;
         }
 
-        .card:active {
-            cursor: grabbing; /* 鼠标按住拖动时显示抓取手形 */
-        }
-
+        /* 删除旧的 hover 效果，完全由 vanilla-tilt 接管 */
         .card:hover {
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
             transform: translateY(-5px);
         }
 
-        h2 {
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 15px;
+            left: 20px;
+            width: 12px;
+            height: 12px;
+            background-color: #ff5f56;
+            border-radius: 50%;
+            box-shadow: 20px 0 0 #ffbd2e,
+            40px 0 0 #27c93f;
+            z-index: 1;
+        }
+
+        .card h2 {
+            margin: 0;
             font-size: 18px;
-            margin-bottom: 15px;
-            color: #333;
+            color: #fff;
+            font-weight: 500;
         }
 
-        p {
+        .card p {
             font-size: 14px;
-            color: #666;
-            margin-bottom: 15px;
+            color: #aaa;
+            margin: 15px 0;
+            line-height: 1.5;
         }
 
-        a {
+        .card a {
+            display: inline-block;
             text-decoration: none;
-            color: white;
-            background-color: #333;
-            padding: 10px 20px;
-            border-radius: 5px;
-            transition: 0.3s;
+            color: #fff;
+            background: linear-gradient(135deg, #0A84FF 0%, #0063CC 100%);
+            padding: 8px 20px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            font-weight: 500;
+            border: none;
         }
 
-        a:hover {
-            background-color: #555;
+        .card a:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(10, 132, 255, 0.3);
+            background: linear-gradient(135deg, #0063CC 0%, #004C99 100%);
+        }
+
+        .modal {
+            backdrop-filter: blur(8px);
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content {
+            background: rgba(45, 45, 45, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            padding: 25px;
+            color: #fff;
+        }
+
+        .close {
+            color: #aaa;
+            opacity: 0.8;
+            transition: all 0.3s ease;
+        }
+
+        .close:hover {
+            color: #fff;
+            opacity: 1;
         }
 
         footer {
-            margin-top: 40px;
+            background: rgba(50, 50, 50, 0.8);
+            backdrop-filter: blur(10px);
             padding: 20px;
-            background-color: #f1f1f1;
             text-align: center;
-            color: #666;
+            color: #aaa;
+            font-size: 14px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        /* 拖拽时的效果 */
         .sortable-ghost {
-            opacity: 0.7; /* 拖拽时的透明度 */
-            transform: rotate(3deg); /* 拖拽时的旋转效果 */
+            opacity: 0.8;
+            transform: scale(1.02) rotate(1deg);
+            background: rgba(60, 60, 60, 0.7);
         }
 
         @media (max-width: 768px) {
             .container {
-                grid-template-columns: 1fr; /* 移动端每行显示1个卡片 */
+                grid-template-columns: 1fr;
+                padding: 0 15px;
+            }
+
+            header h1 {
+                font-size: 20px;
             }
         }
 
@@ -138,7 +234,7 @@
 <body>
 
 <header>
-    <h1>工具集合 - zkogow.top</h1>
+    <h1><span id="typed"></span></h1>
 </header>
 
 <div class="container" id="sortable-container">
@@ -174,7 +270,7 @@
     <div class="card">
         <h2>ChatGPT</h2>
         <p>使用 ChatGPT 聊天服务</p>
-        <a href="/api/v2/chatgpt" target="_blank">访问 ChatGPT 服务</a>
+        <a href="/home/api/v2/chat" target="_blank">访问 ChatGPT 服务</a>
     </div>
 
     <!-- 更多服务 -->
@@ -201,36 +297,63 @@
 <!-- 引入 Sortable.js 库 -->
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.14.0/Sortable.min.js"></script>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.0/vanilla-tilt.min.js"></script>
+
 <script>
     // 使用 Sortable.js 让卡片可拖动
     new Sortable(document.getElementById('sortable-container'), {
-        animation: 600, // 动画效果延长到600ms，使卡片移动更顺滑
-        easing: "cubic-bezier(0.25, 0.8, 0.5, 1)", // 使用缓动函数，使卡片切换更流畅
-        ghostClass: 'sortable-ghost', // 拖动时的视觉效果类
-        handle: '.card', // 明确设置拖动手柄为每张卡片
+        animation: 600,
+        easing: "cubic-bezier(0.25, 0.8, 0.5, 1)",
+        ghostClass: 'sortable-ghost',
+        handle: '.card',
     });
 
-    // 获取模态框和打开按钮
+    // 模态框相关代码
     var modal = document.getElementById("snorlax-modal");
     var btn = document.getElementById("open-modal");
     var span = document.getElementsByClassName("close")[0];
 
-    // 点击按钮打开模态框
     btn.onclick = function () {
         modal.style.display = "block";
     }
 
-    // 点击关闭按钮关闭模态框
     span.onclick = function () {
         modal.style.display = "none";
     }
 
-    // 当用户点击模态框外部时关闭模态框
     window.onclick = function (event) {
         if (event.target == modal) {
             modal.style.display = "none";
         }
     }
+
+    // vanilla-tilt 初始化
+    VanillaTilt.init(document.querySelectorAll(".card"), {
+        max: 15,
+        speed: 400,
+        glare: true,
+        "max-glare": 0.2,
+        scale: 1.05,
+        perspective: 1000,
+        transition: true,
+        gyroscope: true,
+        gyroscopeMinAngleX: -45,
+        gyroscopeMaxAngleX: 45,
+        gyroscopeMinAngleY: -45,
+        gyroscopeMaxAngleY: 45
+    });
+    // 初始化打字机效果
+    new Typed('#typed', {
+        strings: ['工具集合 - zkogow.top'],
+        typeSpeed: 100,         // 打字速度
+        startDelay: 300,        // 开始前的延迟
+        showCursor: true,       // 显示光标
+        cursorChar: '|',        // 自定义光标字符
+        loop: false,            // 是否循环播放
+        backSpeed: 50,          // 回退速度
+        backDelay: 1500,        // 回退前的延迟
+        smartBackspace: true    // 智能回退
+    });
 </script>
 </body>
 </html>
