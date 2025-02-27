@@ -151,6 +151,7 @@
             border-bottom-left-radius: 10px;
             border-bottom-right-radius: 10px;
             display: flex;
+            flex-direction: row;
             gap: 10px;
         }
 
@@ -184,10 +185,12 @@
             font-weight: 500;
             cursor: pointer;
             transition: transform 0.2s;
-            align-self: flex-end;
             height: 50px;
-            white-space: nowrap;
-            min-width: 80px;
+            align-self: flex-end;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 100px;
         }
 
         .send-button:hover {
@@ -277,6 +280,11 @@
 
             .chat-input {
                 padding: 10px;
+            }
+
+            .send-button {
+                min-width: 80px;
+                width: auto;
             }
         }
 
