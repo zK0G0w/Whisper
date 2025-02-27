@@ -312,6 +312,17 @@
         .theme-toggle:hover, .clear-chat:hover {
             color: var(--user-bubble);
         }
+
+        .thinking-message {
+            color: #666;
+            font-style: italic;
+            margin-bottom: 10px;
+        }
+
+        .answer-message {
+            color: #000;
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
@@ -436,79 +447,149 @@
                 themeToggleButton.innerHTML = icon.outerHTML + (darkMode ? ' 浅色模式' : ' 深色模式');
             }
 
+            function appendMessage(role, content) {
+                const chatMessages = document.getElementById('chatMessages');
+                const messageDiv = document.createElement('div');
+                messageDiv.className = role === 'user' ? 'user-message' : 'assistant-message';
+                
+                if (content.startsWith('thinking:')) {
+                    // 显示思考过程
+                    const thinkingContent = content.substring(9);
+                    if (!currentThinkingDiv) {
+                        currentThinkingDiv = document.createElement('div');
+                        currentThinkingDiv.className = 'thinking-message';
+                        currentThinkingDiv.innerHTML = '<strong>思考过程：</strong><br>';
+                        messageDiv.appendChild(currentThinkingDiv);
+                    }
+                    currentThinkingDiv.innerHTML += thinkingContent;
+                } else if (content.startsWith('answer:')) {
+                    // 显示最终回答
+                    const answerContent = content.substring(7);
+                    if (!currentAnswerDiv) {
+                        currentAnswerDiv = document.createElement('div');
+                        currentAnswerDiv.className = 'answer-message';
+                        currentAnswerDiv.innerHTML = '<strong>回答：</strong><br>';
+                        messageDiv.appendChild(currentAnswerDiv);
+                    }
+                    currentAnswerDiv.innerHTML += answerContent;
+                } else if (content.startsWith('error:')) {
+                    // 显示错误信息
+                    messageDiv.textContent = '错误：' + content.substring(6);
+                    messageDiv.style.color = 'red';
+                }
+                
+                chatMessages.appendChild(messageDiv);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+            
+            let currentThinkingDiv = null;
+            let currentAnswerDiv = null;
+            
             function sendMessage() {
                 const message = userInput.value.trim();
                 if (message === '') return;
 
                 // 添加用户消息
-                addMessage(message, 'user');
+                appendMessage('user', message);
 
                 // 清空输入框并重置高度
                 userInput.value = '';
                 userInput.style.height = '50px';
                 sendButton.disabled = true;
 
+                // 重置当前的思考和回答 div
+                currentThinkingDiv = null;
+                currentAnswerDiv = null;
+
                 // 显示打字指示器
                 showTypingIndicator();
 
-                // 发送到服务器
-                fetch('/api/v1/ask', {
+                let fullResponse = '';
+                let currentBlock = '';
+                let isInCodeBlock = false;
+
+                // 使用 fetch API 的流式处理
+                fetch('/api/v1/ask-stream', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({ question: message })
                 })
-                .then(response => response.json())
-                .then(data => {
-                    // 移除打字指示器
-                    removeTypingIndicator();
+                .then(response => {
+                    const reader = response.body.getReader();
+                    const decoder = new TextDecoder();
+                    let buffer = '';
 
-                    // 添加助手回复
-                    if (data.status === 'success') {
-                        addMessage(data.answer, 'assistant');
-                    } else {
-                        addMessage('抱歉，处理您的请求时发生错误。', 'assistant');
+                    function readStream() {
+                        return reader.read().then(({done, value}) => {
+                            if (done) {
+                                if (document.getElementById('typingIndicator')) {
+                                    document.getElementById('typingIndicator').remove();
+                                }
+                                return;
+                            }
+
+                            // 解码新的数据块并添加到缓冲区
+                            buffer += decoder.decode(value, {stream: true});
+                            
+                            // 处理完整的 SSE 消息
+                            const messages = buffer.split('\n\n');
+                            buffer = messages.pop(); // 保留最后一个可能不完整的消息
+
+                            messages.forEach(message => {
+                                const lines = message.split('\n');
+                                let content = '';
+                                
+                                lines.forEach(line => {
+                                    if (line.startsWith('data:')) {
+                                        content = line.substring(5).trim();
+                                        if (content && content !== '[DONE]') {
+                                            // 移除打字指示器
+                                            if (document.getElementById('typingIndicator')) {
+                                                document.getElementById('typingIndicator').remove();
+                                            }
+
+                                            // 添加内容
+                                            fullResponse += content;
+                                            
+                                            // 实时更新显示
+                                            appendMessage('assistant', content);
+                                            
+                                            // 高亮代码块
+                                            if (content.startsWith('thinking:') || content.startsWith('answer:')) {
+                                                const codeBlocks = content.split('\n').filter(line => line.startsWith('```'));
+                                                codeBlocks.forEach(block => {
+                                                    const hljsBlock = document.createElement('code');
+                                                    hljsBlock.className = 'hljs';
+                                                    hljsBlock.textContent = block.substring(3, block.length - 3);
+                                                    currentAnswerDiv.appendChild(hljsBlock);
+                                                });
+                                            }
+
+                                            scrollToBottom();
+                                        }
+                                    }
+                                });
+                            });
+
+                            return readStream();
+                        }).catch(error => {
+                            console.error('Error in readStream:', error);
+                            throw error;
+                        });
                     }
+
+                    return readStream();
                 })
                 .catch(error => {
-                    // 移除打字指示器
-                    removeTypingIndicator();
-
-                    // 显示错误
-                    addMessage('网络错误，请稍后重试。', 'assistant');
-                    console.error('Error:', error);
+                    console.error('Stream failed:', error);
+                    if (document.getElementById('typingIndicator')) {
+                        document.getElementById('typingIndicator').remove();
+                    }
+                    appendMessage('assistant', '连接已关闭');
                 });
 
-                // 滚动到底部
-                scrollToBottom();
-            }
-
-            function addMessage(text, role) {
-                const messageDiv = document.createElement('div');
-                messageDiv.className = `message ${role}-message`;
-
-                let processedText = text;
-
-                // 如果是助手消息，处理Markdown
-                if (role === 'assistant') {
-                    processedText = converter.makeHtml(text);
-                }
-
-                messageDiv.innerHTML = `
-                    <div class="message-content">${processedText}</div>
-                `;
-
-                chatMessages.appendChild(messageDiv);
-
-                // 高亮代码块
-                if (role === 'assistant') {
-                    messageDiv.querySelectorAll('pre code').forEach((block) => {
-                        hljs.highlightElement(block);
-                    });
-                }
-
-                // 滚动到底部
                 scrollToBottom();
             }
 
@@ -547,7 +628,7 @@
 
                     messages.forEach(msg => {
                         if (msg.role === 'user' || msg.role === 'assistant') {
-                            addMessage(msg.content, msg.role);
+                            appendMessage(msg.role, msg.content);
                         }
                     });
 

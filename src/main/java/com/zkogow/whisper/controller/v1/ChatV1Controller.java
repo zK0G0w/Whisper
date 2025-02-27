@@ -5,6 +5,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
+import java.io.IOException;
+import org.springframework.http.MediaType;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -59,6 +62,37 @@ public class ChatV1Controller {
         response.put("message", "Chat history cleared");
 
         return response;
+    }
+
+    @PostMapping(path = "/ask-stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public SseEmitter askStream(@RequestBody Map<String, String> request) {
+        SseEmitter emitter = new SseEmitter(-1L); // 无限超时
+        String question = request.get("question");
+        
+        chatService.getStreamAnswer(question, content -> {
+            try {
+                emitter.send(SseEmitter.event()
+                        .data(content)
+                        .id(String.valueOf(System.currentTimeMillis()))
+                        .name("message"));
+            } catch (IOException e) {
+                emitter.completeWithError(e);
+            }
+        });
+
+        emitter.onCompletion(() -> {
+            try {
+                emitter.send(SseEmitter.event()
+                        .data("")
+                        .id("done")
+                        .name("done"));
+                emitter.complete();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+
+        return emitter;
     }
 
 }

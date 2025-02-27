@@ -2,6 +2,7 @@ package com.zkogow.whisper.service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 /**
  * @Description:
@@ -28,5 +29,12 @@ public interface ChatService {
      * 清空聊天历史
      */
     void clearChatHistory();
+
+    /**
+     * 获取AI模型的流式回答
+     * @param question 用户问题
+     * @param callback 流式回答的回调函数
+     */
+    void getStreamAnswer(String question, Consumer<String> callback);
 
 }
