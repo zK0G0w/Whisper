@@ -179,7 +179,6 @@ public class ChatServiceImpl implements ChatService {
                     .subscribe(chunk -> {
                         try {
                             log.info("接收到数据块: {}", chunk);
-                            // 直接解析JSON，不检查data前缀
                             JsonNode root = objectMapper.readTree(chunk);
                             JsonNode deltaNode = root.path("choices")
                                     .path(0)
@@ -192,7 +191,7 @@ public class ChatServiceImpl implements ChatService {
                             if (!reasoning.isEmpty()) {
                                 log.info("提取到思考内容: {}", reasoning);
                                 reasoningContent.append(reasoning);
-                                callback.accept("thinking:" + reasoning);
+                                callback.accept("thinking:" + formatMarkdown(reasoning));
                             }
                             
                             // 获取 content
@@ -200,7 +199,7 @@ public class ChatServiceImpl implements ChatService {
                             if (!content.isEmpty()) {
                                 log.info("提取到回答内容: {}", content);
                                 fullAnswer.append(content);
-                                callback.accept("answer:" + content);
+                                callback.accept("answer:" + formatMarkdown(content));
                             }
                             
                         } catch (Exception e) {
@@ -241,5 +240,20 @@ public class ChatServiceImpl implements ChatService {
             log.error("处理请求时发生异常: {}", e.getMessage(), e);
             callback.accept("error:" + e.getMessage());
         }
+    }
+
+    // 添加格式化方法
+    private String formatMarkdown(String content) {
+        // 确保代码块正确格式化
+        content = content.replaceAll("```(\\w+)?\\s*\\n", "```$1\n");
+        
+        // 确保列表格式正确
+        content = content.replaceAll("(?m)^-\\s", "- ");
+        content = content.replaceAll("(?m)^\\d+\\.\\s", "$0 ");
+        
+        // 确保标题格式正确
+        content = content.replaceAll("(?m)^#\\s", "# ");
+        
+        return content;
     }
 }
