@@ -134,8 +134,7 @@ public class ChatServiceImpl implements ChatService {
     public void getStreamAnswer(String question, Consumer<String> callback) {
         try {
             log.info("开始处理流式回答请求: {}", question);
-            
-            // 准备请求体，完全匹配curl示例的格式
+
             Map<String, Object> requestBody = new HashMap<>();
             requestBody.put("model", "deepseek-r1-250120");
             requestBody.put("stream", true);
