@@ -7,7 +7,7 @@ mybatis:
 
 # 应用服务 WEB 访问端口
 server:
-  port: 8080
+  port: 8081
 
 # 数据源配置
 spring:
@@ -15,7 +15,20 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://127.0.0.1:3306/Whisper?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=GMT%2B8
     username: root
-    password: root
+    password: Zroot
+    hikari:
+      # 连接池大小（根据并发量调整）
+      maximum-pool-size: 10
+      # 连接最大存活时间（7小时，略小于 MySQL 的 8h）
+      max-lifetime: 25200000  # 7h (单位：毫秒)
+      # 空闲连接保留时间（10分钟）
+      idle-timeout: 600000    # 10min
+      # 获取连接超时时间（30秒）
+      connection-timeout: 30000
+      # 保活心跳（30秒一次，防止防火墙/NAT 超时）
+      keepalive-time: 30000
+      # 连接验证 SQL（确保连接有效）
+      connection-test-query: "SELECT 1"
 
   # Thymeleaf 配置
   thymeleaf:
@@ -48,4 +61,4 @@ spring:
 volc:
   api:
     url: https://ark.cn-beijing.volces.com/api/v3/chat/completions
-    key: your-api-key
+    key: ce567a4c-5823-42f8-b511-a780c11d4ad3
