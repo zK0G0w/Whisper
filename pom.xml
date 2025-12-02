@@ -84,6 +84,20 @@
             <classifier>osx-aarch_64</classifier>
         </dependency>
 
+        <!-- Hutool for Java Utilities -->
+        <dependency>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-all</artifactId>
+            <version>5.8.16</version> <!-- 使用最新版本 -->
+        </dependency>
+
+        <!-- BouncyCastle for SM2 Encryption -->
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcprov-jdk15on</artifactId>
+            <version>1.70</version>
+        </dependency>
+
     </dependencies>
     <dependencyManagement>
         <dependencies>
